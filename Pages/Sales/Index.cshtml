@@ -1,0 +1,76 @@
+@page
+@model InventoryManagementSystem.Pages.Sales.IndexModel
+@{
+    ViewData["Title"] = "Sales List";
+}
+
+<h1>Sales List</h1>
+
+<a asp-page="/Sales/Create" class="btn btn-primary mb-3">Create Sale</a>
+
+<!-- Table for Sales Data -->
+@if (!Model.Sales.Any())
+{
+    <p>No sales data available to display.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity Sold</th>
+                <th>Total Price</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sale in Model.Sales)
+            {
+                <tr>
+                    <td>@sale.Product.Name</td>
+                    <td>@sale.QuantitySold</td>
+                    <td>@sale.TotalPrice.ToString("C")</td>
+                    <td>@sale.Date.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Chart Section -->
+    <h2>Sales Chart</h2>
+    <canvas id="salesChart" width="400" height="200"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Prepare data for the chart
+        const labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Sales.Select(s => s.Product.Name).Distinct()));
+        const data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Sales.GroupBy(s => s.Product.Name).Select(g => g.Sum(s => s.QuantitySold))));
+
+        // Render the chart
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'bar', // You can change this to 'line', 'pie', etc.
+            data: {
+                labels: labels, // Product names
+                datasets: [{
+                    label: 'Quantity Sold',
+                    data: data, // Quantity sold for each product
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    @* <script>
+
+    </script> *@
+}

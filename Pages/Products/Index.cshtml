@@ -1,0 +1,42 @@
+@page
+@model InventoryManagementSystem.Pages.Products.IndexModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h1>Product List</h1>
+
+<p>
+    <a asp-page="./Create" class="btn btn-primary">Add New Product</a>
+</p>
+
+<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.Price.ToString("C")</td>
+                    <td>@product.Category.Name</td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@product.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-page="./Delete" asp-route-id="@product.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

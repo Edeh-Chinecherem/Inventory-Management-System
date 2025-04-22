@@ -1,0 +1,116 @@
+@page
+@model InventoryManagementSystem.Pages.Sales.CreateModel
+@{
+    ViewData["Title"] = "Create Sale";
+}
+
+<h1>Create Sale</h1>
+
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="salesTable">
+            <tr>
+                <td>
+                    <select name="Sales[0].ProductId" class="form-control productDropdown" onchange="updateUnitPrice(this)">
+                        <option value="">-- Select a Product --</option>
+                        @foreach (var product in Model.Products)
+                        {
+                            <option value="@product.Id" data-price="@product.Price">@product.Name</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="Sales[0].QuantitySold" class="form-control quantityInput" oninput="updateTotalPrice(this)" />
+                </td>
+                <td>
+                    <input type="text" class="form-control unitPrice" readonly />
+                </td>
+                <td>
+                    <input type="text" class="form-control totalPrice" readonly />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-secondary" onclick="addRow()">Add Item</button>
+    <br /><br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<!-- Inject Products into JavaScript -->
+<script>
+    const products = [
+        @foreach (var product in Model.Products)
+        {
+            @: { id: @product.Id, name: "@product.Name", price: @product.Price },
+        }
+    ];
+</script>
+
+<script>
+    let rowIndex = 1;
+
+    function createProductDropdown(name) {
+        let html = `<select name="${name}" class="form-control productDropdown" onchange="updateUnitPrice(this)">
+                        <option value="">-- Select a Product --</option>`;
+        products.forEach(p => {
+            html += `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`;
+        });
+        html += `</select>`;
+        return html;
+    }
+
+    function addRow() {
+        const table = document.getElementById("salesTable");
+        const newRow = document.createElement("tr");
+
+        newRow.innerHTML = `
+            <td>${createProductDropdown(`Sales[${rowIndex}].ProductId`)}</td>
+            <td>
+                <input type="number" name="Sales[${rowIndex}].QuantitySold" class="form-control quantityInput" oninput="updateTotalPrice(this)" />
+            </td>
+            <td>
+                <input type="text" class="form-control unitPrice" readonly />
+            </td>
+            <td>
+                <input type="text" class="form-control totalPrice" readonly />
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
+            </td>
+        `;
+        table.appendChild(newRow);
+        rowIndex++;
+    }
+
+    function removeRow(button) {
+        const row = button.closest("tr");
+        row.remove();
+    }
+
+    function updateUnitPrice(select) {
+        const price = select.options[select.selectedIndex].getAttribute("data-price");
+        const row = select.closest("tr");
+        row.querySelector(".unitPrice").value = price || "";
+        updateTotalPrice(row.querySelector(".quantityInput"));
+    }
+
+    function updateTotalPrice(input) {
+        const row = input.closest("tr");
+        const unitPrice = parseFloat(row.querySelector(".unitPrice").value) || 0;
+        const quantity = parseInt(input.value) || 0;
+        const totalPrice = unitPrice * quantity;
+        row.querySelector(".totalPrice").value = totalPrice.toFixed(2);
+    }
+</script>

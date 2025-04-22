@@ -1,0 +1,125 @@
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
+}
+
+/* Slide-in animation */
+@keyframes slideIn {
+  from {
+      transform: translateX(-100%);
+      opacity: 0;
+  }
+  to {
+      transform: translateX(0);
+      opacity: 1;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  
+}
+
+html {
+  font-size: 14px;
+}
+
+html, body {
+  height: 100%;
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+
+
+.hero {
+  background-image: url('/images/hero-background.jpg'); /* Path to your image */
+  background-size: cover; /* Ensure the image covers the entire section */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent repeating */
+  padding: 50px 20px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  color: peachpuff; /* Ensure text is readable on the image */
+  position: relative; /* Make the hero section a positioned container */
+  overflow: hidden; /* Ensure the blur effect doesn't overflow */
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: inherit; /* Use the same background image */
+  background-size: inherit;
+  background-position: inherit;
+  background-repeat: inherit;
+  filter: blur(3px); /* Apply blur effect */
+  z-index: 1; /* Place it behind the text */
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  animation: fadeIn 2s ease-in-out;
+}
+.hero p {
+  font-size: 1.2rem;
+  color: peachpuff;
+  animation: slideIn 2s ease-in-out;
+}
+
+.hero h1, .hero p {
+  position: relative; /* Ensure text is above the blurred background */
+  z-index: 2;
+}
+
+.carousel img {
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.create-form {
+  max-height: 400px; /* Set the maximum height for the form */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 20px;
+  background-color: #f8f9fa; /* Optional: Light background for the form */
+  border-radius: 5px; /* Optional: Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Subtle shadow */
+  border: 1px solid #ddd; /
+}
+.footer {
+  background-color: #f8f9fa;
+  padding: 20px 0;
+  text-align: center;
+  border-top: 1px solid #ddd;
+}
+
+.table-responsive {
+  max-height: 500px; /* Adjust height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+  margin-bottom: 20px;
+}
