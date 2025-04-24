@@ -6,7 +6,7 @@
 
 <h1>Create Sale</h1>
 
-<form method="post">
+<form method="post" onsubmit="return validateQuantities();">
     <table class="table">
         <thead>
             <tr>
@@ -20,16 +20,17 @@
         <tbody id="salesTable">
             <tr>
                 <td>
-                    <select name="Sale[0].ProductId" class="form-control productDropdown" onchange="updateUnitPrice(this)">
+                    <select name="Sales[0].ProductId" class="form-control productDropdown" onchange="updateUnitPrice(this)">
                         <option value="">-- Select --</option>
                         @foreach (var product in Model.Products)
                         {
-                            <option value="@product.Id" data-price="@product.Price">@product.Name</option>
+                            <option value="@product.Id" data-price="@product.Price" data-quantity="@product.Quantity">@product.Name (In stock: @product.Quantity)</option>
                         }
                     </select>
                 </td>
                 <td>
-                    <input type="number" name="Sale[0].QuantitySold" class="form-control quantityInput" oninput="updateTotalPrice(this)" />
+                    <input type="number" name="Sales[0].QuantitySold" class="form-control quantityInput" oninput="updateTotalPrice(this)" />
+                    <span class="text-danger error-message"></span>
                 </td>
                 <td>
                     <input type="text" class="form-control unitPrice" readonly />
@@ -48,10 +49,10 @@
         <label><strong>Grand Total:</strong></label>
         <input type="text" id="grandTotal" class="form-control text-right font-weight-bold" readonly style="max-width: 200px;" />
     </div>
-<br>
-<br>
+
+    <br><br>
     <button type="button" class="btn btn-secondary" onclick="addRow()">Add Item</button>
-    <br /><br />
+    <br><br />
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
@@ -62,7 +63,7 @@
         const products = [
             @foreach (var product in Model.Products)
             {
-                @: { id: @product.Id, name: "@product.Name", price: @product.Price },
+                @: { id: @product.Id, name: "@product.Name", price: @product.Price, quantity: @product.Quantity },
             }
         ];
 
@@ -72,7 +73,9 @@
             let html = `<select name="${name}" class="form-control productDropdown" onchange="updateUnitPrice(this)">
                             <option value="">-- Select --</option>`;
             products.forEach(p => {
-                html += `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`;
+                html += `<option value="${p.id}" data-price="${p.price}" data-quantity="${p.quantity}">
+                            ${p.name} (In stock: ${p.quantity})
+                         </option>`;
             });
             html += `</select>`;
             return html;
@@ -83,8 +86,11 @@
             const newRow = document.createElement("tr");
 
             newRow.innerHTML = `
-                <td>${createProductDropdown(`Sale[${rowIndex}].ProductId`)}</td>
-                <td><input type="number" name="Sale[${rowIndex}].QuantitySold" class="form-control quantityInput" oninput="updateTotalPrice(this)" /></td>
+                <td>${createProductDropdown(`Sales[${rowIndex}].ProductId`)}</td>
+                <td>
+                    <input type="number" name="Sales[${rowIndex}].QuantitySold" class="form-control quantityInput" oninput="updateTotalPrice(this)" />
+                    <span class="text-danger error-message"></span>
+                </td>
                 <td><input type="text" class="form-control unitPrice" readonly /></td>
                 <td><input type="text" class="form-control totalPrice" readonly /></td>
                 <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
@@ -101,7 +107,8 @@
         }
 
         function updateUnitPrice(select) {
-            const price = select.options[select.selectedIndex].getAttribute("data-price");
+            const selectedOption = select.options[select.selectedIndex];
+            const price = selectedOption.getAttribute("data-price");
             const row = select.closest("tr");
             row.querySelector(".unitPrice").value = price || "";
             updateTotalPrice(row.querySelector(".quantityInput"));
@@ -123,6 +130,30 @@
                 if (!isNaN(val)) total += val;
             });
             document.getElementById("grandTotal").value = total.toFixed(2);
+        }
+
+        function validateQuantities() {
+            let isValid = true;
+            document.querySelectorAll("#salesTable tr").forEach(row => {
+                const select = row.querySelector(".productDropdown");
+                const quantityInput = row.querySelector(".quantityInput");
+                const errorSpan = row.querySelector(".error-message");
+
+                if (!select || !quantityInput || !errorSpan) return;
+
+                const selectedOption = select.options[select.selectedIndex];
+                const availableQty = parseInt(selectedOption.getAttribute("data-quantity")) || 0;
+                const enteredQty = parseInt(quantityInput.value) || 0;
+
+                if (enteredQty > availableQty) {
+                    errorSpan.textContent = `Only ${availableQty} in stock.`;
+                    isValid = false;
+                } else {
+                    errorSpan.textContent = "";
+                }
+            });
+
+            return isValid;
         }
     </script>
 }
