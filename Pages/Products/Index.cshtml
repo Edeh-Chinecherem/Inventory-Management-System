@@ -10,33 +10,65 @@
     <a asp-page="./Create" class="btn btn-primary">Add New Product</a>
 </p>
 
-<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Description</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model.Products)
-            {
+@if (Model.Products == null || !Model.Products.Any())
+{
+    <div class="alert alert-info">No products available. Click the button above to add one.</div>
+}
+else
+{
+    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark text-nowrap">
                 <tr>
-                    <td>@product.Name</td>
-                    <td>@product.Description</td>
-                    <td>@product.Quantity</td>
-                    <td>@product.Price.ToString("C")</td>
-                    <td>@product.Category.Name</td>
-                    <td>
-                        <a asp-page="./Edit" asp-route-id="@product.Id" class="btn btn-warning btn-sm">Edit</a>
-                        <a asp-page="./Delete" asp-route-id="@product.Id" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
+                    <th>Product Name</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.Products)
+                {
+                    <tr id="product-row-@product.Id">
+                        <td>@product.Name</td>
+                        <td>@product.Description</td>
+                        <td class="product-qty" data-product-id="@product.Id">@product.Quantity</td>
+                        <td>@product.Price.ToString("C")</td>
+                        <td>@product.Category?.Name</td>
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@product.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-page="./Delete" asp-route-id="@product.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/1.1.4/signalr.min.js"></script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/InventoryHub")
+            .build();
+
+        connection.on("ReceiveInventoryUpdate", (productName, newQuantity) => {
+            console.log(`Inventory updated for ${productName}: ${newQuantity}`);
+
+            // Update quantity in table if present
+            document.querySelectorAll(".product-qty").forEach(td => {
+                const row = td.closest("tr");
+                const nameCell = row.querySelector("td:first-child");
+                if (nameCell && nameCell.textContent.trim() === productName) {
+                    td.textContent = newQuantity;
+                }
+            });
+        });
+
+        connection.start().catch(err => console.error("SignalR connection failed:", err));
+    </script>
+}

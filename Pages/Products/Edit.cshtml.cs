@@ -20,21 +20,23 @@ namespace InventoryManagementSystem.Pages.Products
         public Product Product { get; set; }
 
         [BindProperty]
-        public string SelectedCategory { get; set; }
+        public int SelectedCategoryId { get; set; }
 
         public SelectList Categories { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
+            Product = await _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (Product == null)
             {
                 return NotFound();
             }
 
-            SelectedCategory = Product.Category?.Name;
-            Categories = new SelectList(await _context.Categories.ToListAsync(), "Name", "Name");
+            SelectedCategoryId = Product.CategoryId;
+            Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
             return Page();
         }
 
@@ -42,15 +44,11 @@ namespace InventoryManagementSystem.Pages.Products
         {
             if (!ModelState.IsValid)
             {
-                Categories = new SelectList(await _context.Categories.ToListAsync(), "Name", "Name");
+                Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
                 return Page();
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Name == SelectedCategory);
-            if (category != null)
-            {
-                Product.CategoryId = category.Id;
-            }
+            Product.CategoryId = SelectedCategoryId;
 
             _context.Attach(Product).State = EntityState.Modified;
 
