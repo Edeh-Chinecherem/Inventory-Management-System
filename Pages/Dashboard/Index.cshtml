@@ -1,0 +1,81 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <h2>Dashboard Overview</h2>
+
+    <!-- Cards Section -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <h5>Total Products</h5>
+                    <h3>@Model.TotalProducts</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark shadow-sm">
+                <div class="card-body">
+                    <h5>Low Stock</h5>
+                    <h3>@Model.LowStockCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <h5>Sales Today</h5>
+                    <h3>@Model.SalesToday.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("en-US"))</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock Table -->
+    <h4 class="mt-5">📉 Low Stock Alerts</h4>
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.LowStockProducts)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Quantity</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Recent Sales Table -->
+    <h4 class="mt-5">🛒 Recent Sales</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sale in Model.RecentSales)
+            {
+                <tr>
+                    <td>@sale.Product.Name</td>
+                    <td>@sale.QuantitySold</td>
+                    <td>@sale.TotalPrice.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("en-US"))</td>
+                    <td>@sale.Date.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
