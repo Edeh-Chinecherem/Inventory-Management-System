@@ -4,35 +4,37 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="container text-center mt-5">
-    <div class="hero-section py-5 bg-light rounded shadow">
-        <h1 class="display-4">Welcome to SuperMart Manager 🛒</h1>
-        <p class="lead">Your all-in-one solution to manage products, track sales, and stay on top of your inventory.</p>
+<div class="container text-center mt-5 hero-bg p-5 shadow">
+    <div class="hero-section py-5">
+        <h1 class="typing-effect">Welcome to SuperMart Manager 🛒</h1>
+        <p class="lead slide-in mt-3">Your all-in-one solution to manage products, track sales, and stay on top of your inventory.</p>
+
         <div class="mt-4">
             <a class="btn btn-primary btn-lg mx-2" asp-page="/Products/Index">Manage Products</a>
             <a class="btn btn-success btn-lg mx-2" asp-page="/Sales/Index">View Sales</a>
-            <a class="btn btn-outline-secondary btn-lg mx-2" asp-page="/Dashboard/Index">Go to Dashboard</a>
+            <a class="btn btn-outline-light btn-lg mx-2" asp-page="/Dashboard/Index">Go to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3 border-start border-primary border-4">
+            <h5 class="card-title">Inventory Tracking</h5>
+            <p class="card-text">Easily monitor your stock levels and get alerts when running low.</p>
         </div>
     </div>
 
-    <div class="row mt-5">
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 border-start border-primary border-4">
-                <h5 class="card-title">Inventory Tracking</h5>
-                <p class="card-text">Easily monitor your stock levels and get alerts when running low.</p>
-            </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3 border-start border-success border-4">
+            <h5 class="card-title">Sales Insights</h5>
+            <p class="card-text">Track your daily sales and view performance summaries in real-time.</p>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 border-start border-success border-4">
-                <h5 class="card-title">Sales Insights</h5>
-                <p class="card-text">Track your daily sales and view performance summaries in real-time.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 border-start border-warning border-4">
-                <h5 class="card-title">Smart Reports</h5>
-                <p class="card-text">Generate reports to help you make better business decisions.</p>
-            </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3 border-start border-warning border-4">
+            <h5 class="card-title">Smart Reports</h5>
+            <p class="card-text">Generate reports to help you make better business decisions.</p>
         </div>
     </div>
 </div>
