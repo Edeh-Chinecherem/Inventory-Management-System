@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace InventoryManagementSystem.Models;
 
 public class Sale
@@ -8,10 +11,13 @@ public class Sale
     
     [Required]
     public int ProductId { get; set; }
-    public Product Product { get; set; } = null!;
-
+    
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than 0")]
     public int QuantitySold { get; set; }
     public decimal TotalPrice { get; set; }
+
+    [ValidateNever]
+    public Product Product { get; set; } = null!;
+
 }

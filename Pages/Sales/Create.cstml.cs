@@ -33,6 +33,7 @@ namespace InventoryManagementSystem.Pages.Sales
 
         public async Task<IActionResult> OnPostAsync()
         {
+
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("Model state is invalid.");
