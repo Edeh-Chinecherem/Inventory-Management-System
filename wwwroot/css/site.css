@@ -24,6 +24,10 @@
   font-size: 2.5rem;
 }
 
+.typed-done {
+  border-right: none;
+}
+
 @keyframes slideIn {
   from {
       opacity: 0;

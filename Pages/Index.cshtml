@@ -38,3 +38,13 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        const typingElement = document.querySelector('.typing-effect');
+
+        typingElement.addEventListener('animationend', () => {
+            typingElement.classList.remove('typing-effect');
+            typingElement.classList.add('typed-done');
+        });
+    </script>
+}
